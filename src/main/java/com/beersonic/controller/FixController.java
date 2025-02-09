@@ -1,5 +1,6 @@
 package com.beersonic.controller;
 
+import com.beersonic.fix.FixMessageUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import quickfix.InvalidMessage;
@@ -21,6 +22,7 @@ public class FixController {
   public String sendFixMessage(@RequestBody String fixMessage) {
     try {
       log.info("Sending message: {}", fixMessage);
+      fixMessage = FixMessageUtil.convertPipeToSoh(fixMessage);
       Message message = new Message(fixMessage);
       Session.sendToTarget(message);
       return "Message sent";

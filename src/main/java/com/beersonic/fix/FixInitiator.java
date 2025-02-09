@@ -7,14 +7,14 @@ import quickfix.*;
 @Slf4j
 @Component
 public class FixInitiator implements Application {
-  private Initiator initiator;
 
   public FixInitiator() throws ConfigError {
     SessionSettings settings = new SessionSettings("config/quickfixj.cfg");
     MessageStoreFactory storeFactory = new FileStoreFactory(settings);
     LogFactory logFactory = new FileLogFactory(settings);
     MessageFactory messageFactory = new DefaultMessageFactory();
-    initiator = new SocketInitiator(this, storeFactory, settings, logFactory, messageFactory);
+    Initiator initiator =
+        new SocketInitiator(this, storeFactory, settings, logFactory, messageFactory);
     initiator.start();
 
     log.info("Initiator is started");
@@ -36,9 +36,8 @@ public class FixInitiator implements Application {
   public void fromAdmin(Message message, SessionID sessionId) {}
 
   @Override
-  public void toApp(Message message, SessionID sessionId) throws DoNotSend {}
+  public void toApp(Message message, SessionID sessionId) {}
 
   @Override
-  public void fromApp(Message message, SessionID sessionId)
-      throws FieldNotFound, IncorrectDataFormat, IncorrectTagValue, UnsupportedMessageType {}
+  public void fromApp(Message message, SessionID sessionId) {}
 }
