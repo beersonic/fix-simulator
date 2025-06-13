@@ -6,6 +6,11 @@ plugins {
     id("com.diffplug.spotless") version "$spotlessVersion"
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
 group = "com.beersonic"
 version = "1.0-SNAPSHOT"
 
@@ -47,7 +52,7 @@ dependencies {
 
     // Testing
     testImplementation(platform("org.junit:junit-bom:$junitBomVersion"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.junit.jupiter:junit-jupiter:$junitBomVersion")
     testImplementation("org.mockito:mockito-junit-jupiter:$mockitoVersion")
     testImplementation("org.mockito:mockito-core:$mockitoVersion")
     testImplementation("org.springframework.boot:spring-boot-starter-test")

@@ -25,7 +25,11 @@ public class FixControllerTest {
 
   @Mock private Session session;
 
-  @BeforeEach
+    public FixControllerTest(MockMvc mockMvc) {
+        this.mockMvc = mockMvc;
+    }
+
+    @BeforeEach
   void setUp() {
     Mockito.reset(session);
   }
@@ -40,12 +44,13 @@ public class FixControllerTest {
 
   @Test
   void sendFixMessageSuccessfully() throws Exception {
-    String fixMessage = "8=FIX.5.0SP2|9=178|35=AE|34=1|49=ClientCompID|56=ServerCompID|55=AAPL|22=1|150=0|17=123456|31=150.50|32=100|54=1|60=20240209-12:30:00.000|10=121|";
+    String fixMessage =
+        "8=FIX.5.0SP2|9=178|35=AE|34=1|49=ClientCompID|56=ServerCompID|55=AAPL|22=1|150=0|17=123456|31=150.50|32=100|54=1|60=20240209-12:30:00.000|10=121|";
     doNothing().when(session).sendToTarget(Mockito.any(Message.class));
     mockMvc
-            .perform(post("/api/fix/send").content(fixMessage).contentType("application/json"))
-            .andExpect(status().isOk())
-            .andExpect(content().string("Message sent"));
+        .perform(post("/api/fix/send").content(fixMessage).contentType("application/json"))
+        .andExpect(status().isOk())
+        .andExpect(content().string("Message sent"));
   }
 
   @Test

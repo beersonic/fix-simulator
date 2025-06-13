@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FIX Message Visualizer</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f4f4f4; color: #333; }
+        h1 { text-align: center; color: #2c3e50; }
+        #messagesArea { margin-top: 20px; }
+        .message-container {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .message-header {
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #eee;
+        }
+        .message-header .direction-incoming { color: #27ae60; } /* Green for incoming */
+        .message-header .direction-outgoing { color: #2980b9; } /* Blue for outgoing */
+        .raw-message-toggle {
+            cursor: pointer;
+            color: #3498db;
+            font-size: 0.9em;
+            margin-left: 10px;
+        }
+        .raw-message-content {
+            font-family: 'Courier New', Courier, monospace;
+            white-space: pre-wrap;
+            word-break: break-all;
+            background-color: #ecf0f1;
+            padding: 10px;
+            margin-top: 8px;
+            border-radius: 3px;
+            font-size: 0.9em;
+            display: none; /* Hidden by default */
+        }
+        .fields-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .fields-table th, .fields-table td {
+            border: 1px solid #e0e0e0;
+            padding: 8px;
+            text-align: left;
+            vertical-align: top;
+            font-size: 0.95em;
+        }
+        .fields-table th {
+            background-color: #f9f9f9;
+            font-weight: bold;
+        }
+        .fields-table tr:nth-child(even) { background-color: #fdfdfd; }
+        #refreshButton {
+            display: block;
+            margin: 0 auto 20px auto;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        #refreshButton:hover { background-color: #2980b9; }
+    </style>
+</head>
+<body>
+<h1>FIX Message Stream</h1>
+<button id="refreshButton" onclick="fetchMessages()">Refresh Messages</button>
+<div id="messagesArea">Loading messages...</div>
+
+<script>
+    async function fetchMessages() {
+        const messagesArea = document.getElementById('messagesArea');
+        try {
+            const response = await fetch('/api/fix-messages');
+            if (!response.ok) {
+                messagesArea.innerHTML = `<p style="color:red;">Error fetching messages: ${response.statusText}</p>`;
+                return;
+            }
+            const messages = await response.json();
+            renderMessages(messages);
+        } catch (error) {
+            messagesArea.innerHTML = `<p style="color:red;">Error fetching messages: ${error}</p>`;
+            console.error("Fetch error:", error);
+        }
+    }
+
+    function renderMessages(messages) {
+        const messagesArea = document.getElementById('messagesArea');
+        messagesArea.innerHTML = ''; // Clear previous messages
+
+        if (messages.length === 0) {
+            messagesArea.innerHTML = '<p>No messages captured yet.</p>';
+            return;
+        }
+
+        messages.forEach((msg, index) => {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'message-container';
+
+            const directionClass = msg.direction.toLowerCase().includes('incoming') ? 'direction-incoming' : 'direction-outgoing';
+
+            let headerHtml = `
+                <div class="message-header">
+                    <span class="${directionClass}">${escapeHtml(msg.direction)}</span> - ${escapeHtml(msg.messageType)}
+                    <span style="float:right; font-weight:normal; font-size:0.9em;">${new Date(msg.timestamp).toLocaleString()}</span>
+                    <span class="raw-message-toggle" onclick="toggleRawMessage('raw-${index}')">(Show/Hide Raw)</span>
+                </div>
+                <div id="raw-${index}" class="raw-message-content">${escapeHtml(msg.rawMessage)}</div>
+            `;
+
+            let fieldsTableHtml = '<h4>Decoded Fields:</h4><table class="fields-table"><thead><tr><th>Field Name (Tag)</th><th>Value (Interpreted)</th></tr></thead><tbody>';
+            for (const fieldName in msg.fields) {
+                fieldsTableHtml += `<tr><td>${escapeHtml(fieldName)}</td><td>${escapeHtml(msg.fields[fieldName])}</td></tr>`;
+            }
+            fieldsTableHtml += '</tbody></table>';
+
+            msgDiv.innerHTML = headerHtml + fieldsTableHtml;
+            messagesArea.appendChild(msgDiv);
+        });
+    }
+
+    function toggleRawMessage(id) {
+        const el = document.getElementById(id);
+        if (el) {
+            el.style.display = el.style.display === 'none' ? 'block' : 'none';
+        }
+    }
+
+    function escapeHtml(unsafe) {
+        if (unsafe === null || typeof unsafe === 'undefined') return '';
+        return unsafe
+             .toString()
+             .replace(/&/g, "&amp;")
+             .replace(/</g, "&lt;")
+             .replace(/>/g, "&gt;")
+             .replace(/"/g, "&quot;")
+             .replace(/'/g, "&#039;");
+    }
+
+    // Initial load
+    fetchMessages();
+    // Optionally, set an interval to auto-refresh
+    setInterval(fetchMessages, 10000); // Refresh every 10 seconds
+</script>
+</body>
+</html>
