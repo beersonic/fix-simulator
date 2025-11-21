@@ -1,0 +1,57 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.springframework.boot' version "$springBootVersion"
+    id 'io.spring.dependency-management' version '1.1.5'
+    id 'com.github.ben-manes.versions' version "$versionsPluginVersion"
+    id 'com.diffplug.spotless' version "$spotlessPluginVersion"
+}
+
+group = 'org.example'
+version = '0.1.0'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+sourceCompatibility = JavaVersion.VERSION_21
+targetCompatibility = JavaVersion.VERSION_21
+
+application {
+    // fully-qualified main class
+    mainClass = 'org.example.App'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+    implementation 'org.quickfixj:quickfixj-core:2.3.0'
+    implementation 'org.quickfixj:quickfixj-all:2.3.0'
+    implementation 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+}
+
+tasks.test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
+spotless {
+    java {
+        // Use the default importOrder configuration
+        importOrder()
+        // Use the Google Java Format
+        googleJavaFormat()
+        // Enforce a consistent end-of-file newline
+        endWithNewline()
+    }
+}

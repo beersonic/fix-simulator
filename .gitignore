@@ -1,0 +1,15 @@
+/build/
+/.gradle/
+.gradle/
+.gradle*
+/.idea/
+*.iml
+*.class
+out/
+# Windows
+Thumbs.db
+# macOS
+.DS_Store
+
+# Gradle wrapper
+/gradle/wrapper/gradle-wrapper.jar
