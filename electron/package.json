@@ -1,0 +1,15 @@
+{
+    "name": "fix-simulator-electron",
+    "version": "0.1.0",
+    "description": "Electron wrapper for Fix Simulator (starts local Java backend and shows the web UI)",
+    "main": "main.js",
+    "scripts": {
+        "start": "electron .",
+        "dev": "electron ."
+    },
+    "author": "",
+    "license": "MIT",
+    "devDependencies": {
+        "electron": "^25.0.0"
+    }
+}

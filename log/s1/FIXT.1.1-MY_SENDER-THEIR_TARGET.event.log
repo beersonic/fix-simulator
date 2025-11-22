@@ -1,0 +1,5 @@
+20251122-02:07:05: Session FIXT.1.1:MY_SENDER->THEIR_TARGET schedule is daily, 00:00:00-UTC - 23:59:59-UTC
+20251122-02:07:05: Created session: FIXT.1.1:MY_SENDER->THEIR_TARGET
+20251122-02:07:05: Configured socket addresses for session: [/127.0.0.1:9876]
+20251122-02:07:05: java.net.ConnectException during connection to /127.0.0.1:9876: java.net.ConnectException: Connection refused: getsockopt (Next retry in 30000 milliseconds)
+20251122-02:07:35: java.net.ConnectException during connection to /127.0.0.1:9876: java.net.ConnectException: Connection refused: getsockopt (Next retry in 30000 milliseconds)

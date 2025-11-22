@@ -1,0 +1,70 @@
+# Backend REST tests for Fix Simulator
+# Use with the VS Code REST Client extension
+# Make sure the backend is running (./gradlew.bat bootRun) before running these requests.
+
+@baseUrl = http://localhost:8080
+
+# Server-specific variables (for creating an initiator that connects to your acceptor)
+# Note: when acting as an initiator, SenderCompID must be the client id and TargetCompID the server id
+@serverHost = 127.0.0.1
+@serverPort = 9878
+@serverSender = BeerClient01
+@serverTarget = BeerFIXServer
+
+### Create initiator session
+POST {{baseUrl}}/fix/session
+Content-Type: application/json
+
+{
+  "type": "initiator",
+  "senderCompID": "MY_SENDER",
+  "targetCompID": "THEIR_TARGET",
+  "host": "127.0.0.1",
+  "port": "9876",
+  "heartBtInt": "30"
+}
+
+### Create initiator session for your local FIX server (update variables at top to match server config)
+POST {{baseUrl}}/fix/session
+Content-Type: application/json
+
+{
+  "type": "initiator",
+  "senderCompID": "{{serverSender}}",
+  "targetCompID": "{{serverTarget}}",
+  "host": "{{serverHost}}",
+  "port": "{{serverPort}}",
+  "heartBtInt": "30",
+    "defaultApplVerID": "FIX.5.0SP2",
+    "resetOnLogon": "Y"
+}
+
+### Create acceptor session (listening)
+POST {{baseUrl}}/fix/session
+Content-Type: application/json
+
+{
+  "type": "acceptor",
+  "senderCompID": "ACPT_SENDER",
+  "targetCompID": "ACPT_TARGET",
+  "host": "0.0.0.0",
+  "port": "5001",
+  "heartBtInt": "30"
+}
+
+### List sessions
+GET {{baseUrl}}/fix/sessions
+
+### Get messages for a session (replace s1 with the session id returned when creating)
+GET {{baseUrl}}/fix/sessions/s1/messages
+
+### Stop a session (replace s1 with session id)
+POST {{baseUrl}}/fix/sessions/s1/stop
+Content-Type: application/json
+
+
+### Notes
+# - After creating a session, the response body contains the generated session id (e.g., s1).
+# - Use that id in the messages and stop requests.
+# - For initiator sessions, QuickFIX will attempt to connect to the host:port you provided.
+# - Logs and store files are written to log/s{n} and store/s{n} in the project root.

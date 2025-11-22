@@ -21,7 +21,7 @@ targetCompatibility = JavaVersion.VERSION_21
 
 application {
     // fully-qualified main class
-    mainClass = 'org.example.App'
+    mainClass = 'com.beersonic.App'
 }
 
 repositories {
