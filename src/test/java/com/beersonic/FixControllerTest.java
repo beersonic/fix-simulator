@@ -64,7 +64,8 @@ public class FixControllerTest {
           .andExpect(jsonPath("$.stopped").value(true));
     } catch (jakarta.servlet.ServletException e) {
       if (e.getCause() instanceof UnsupportedOperationException) {
-        System.out.println("UnsupportedOperationException during message retrieval: " + e.getCause().getMessage());
+        System.out.println(
+            "UnsupportedOperationException during message retrieval: " + e.getCause().getMessage());
       } else {
         throw new RuntimeException(e);
       }

@@ -157,7 +157,7 @@ public class QuickFixService {
   public List<Map<String, Object>> listSessions() {
     List<Map<String, Object>> out = new ArrayList<>();
     for (SessionHolder sh : sessions.values()) {
-      Map<String, Object> m = sh.toMap();
+      Map<String, Object> m = new java.util.HashMap<>(sh.toMap());
       boolean loggedOn = false;
       try {
         // Try to get QuickFIX/J session status

@@ -8,21 +8,8 @@
 # Note: when acting as an initiator, SenderCompID must be the client id and TargetCompID the server id
 @serverHost = 127.0.0.1
 @serverPort = 9878
-@serverSender = BeerClient01
+@serverSender = BeerClient04
 @serverTarget = BeerFIXServer
-
-### Create initiator session
-POST {{baseUrl}}/fix/session
-Content-Type: application/json
-
-{
-  "type": "initiator",
-  "senderCompID": "MY_SENDER",
-  "targetCompID": "THEIR_TARGET",
-  "host": "127.0.0.1",
-  "port": "9876",
-  "heartBtInt": "30"
-}
 
 ### Create initiator session for your local FIX server (update variables at top to match server config)
 POST {{baseUrl}}/fix/session
