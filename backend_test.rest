@@ -35,8 +35,8 @@ Content-Type: application/json
   "host": "{{serverHost}}",
   "port": "{{serverPort}}",
   "heartBtInt": "30",
-    "defaultApplVerID": "FIX.5.0SP2",
-    "resetOnLogon": "Y"
+  "defaultApplVerID": "FIX.5.0SP2",
+  "resetOnLogon": "Y"
 }
 
 ### Create acceptor session (listening)
@@ -56,10 +56,12 @@ Content-Type: application/json
 GET {{baseUrl}}/fix/sessions
 
 ### Get messages for a session (replace s1 with the session id returned when creating)
-GET {{baseUrl}}/fix/sessions/s1/messages
+### Get messages for a session (replace {{sessionId}} with the session id returned when creating)
+GET {{baseUrl}}/fix/sessions/{{sessionId}}/messages
 
 ### Stop a session (replace s1 with session id)
-POST {{baseUrl}}/fix/sessions/s1/stop
+### Stop a session (replace {{sessionId}} with session id)
+POST {{baseUrl}}/fix/sessions/{{sessionId}}/stop
 Content-Type: application/json
 
 
