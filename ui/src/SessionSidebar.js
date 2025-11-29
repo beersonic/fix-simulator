@@ -49,7 +49,7 @@ export default function SessionSidebar({
             }}
           >
             <div style={{ flex: 1 }}>
-              <strong style={{ fontSize: '1em' }}>{session.sessionName}</strong>
+              <strong style={{ fontSize: '1em' }}>{session.senderCompID + '-' + session.targetCompID}</strong>
               <div style={{ fontSize: '0.8em', color: '#666' }}>ID: {session.id}</div>
             </div>
             <span style={{color: session.loggedOn ? 'green' : 'gray', fontWeight: 'bold', fontSize: '0.9em'}}>{session.loggedOn ? 'Online' : 'Offline'}</span>

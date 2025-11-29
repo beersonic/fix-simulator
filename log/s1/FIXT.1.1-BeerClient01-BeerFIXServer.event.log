@@ -164,3 +164,53 @@
 20251122-02:50:49: Setting DefaultApplVerID (1137=9) from Logon
 20251122-02:50:49: Logon contains ResetSeqNumFlag=Y, resetting sequence numbers to 1
 20251122-02:50:49: Received logon
+20251122-12:57:05: Session FIXT.1.1:BeerClient01->BeerFIXServer schedule is daily, 00:00:00-UTC - 23:59:59-UTC
+20251122-12:57:05: Created session: FIXT.1.1:BeerClient01->BeerFIXServer
+20251122-12:57:05: Configured socket addresses for session: [/127.0.0.1:9878]
+20251122-12:57:05: java.net.ConnectException during connection to /127.0.0.1:9878: java.net.ConnectException: Connection refused: getsockopt (Next retry in 30000 milliseconds)
+20251122-12:57:36: java.net.ConnectException during connection to /127.0.0.1:9878: java.net.ConnectException: Connection refused: getsockopt (Next retry in 30000 milliseconds)
+20251122-12:58:06: java.net.ConnectException during connection to /127.0.0.1:9878: java.net.ConnectException: Connection refused: getsockopt (Next retry in 30000 milliseconds)
+20251122-12:58:36: java.net.ConnectException during connection to /127.0.0.1:9878: java.net.ConnectException: Connection refused: getsockopt (Next retry in 30000 milliseconds)
+20251122-12:59:07: java.net.ConnectException during connection to /127.0.0.1:9878: java.net.ConnectException: Connection refused: getsockopt (Next retry in 30000 milliseconds)
+20251122-12:59:37: java.net.ConnectException during connection to /127.0.0.1:9878: java.net.ConnectException: Connection refused: getsockopt (Next retry in 30000 milliseconds)
+20251122-13:00:07: java.net.ConnectException during connection to /127.0.0.1:9878: java.net.ConnectException: Connection refused: getsockopt (Next retry in 30000 milliseconds)
+20251122-13:00:38: java.net.ConnectException during connection to /127.0.0.1:9878: java.net.ConnectException: Connection refused: getsockopt (Next retry in 30000 milliseconds)
+20251122-13:01:08: java.net.ConnectException during connection to /127.0.0.1:9878: java.net.ConnectException: Connection refused: getsockopt (Next retry in 30000 milliseconds)
+20251122-13:01:38: MINA session created: local=/127.0.0.1:12028, class org.apache.mina.transport.socket.nio.NioSocketSession, remote=/127.0.0.1:9878
+20251122-13:01:38: Initiated logon request
+20251122-13:01:38: Disconnecting: Encountered END_OF_STREAM
+20251122-13:02:09: MINA session created: local=/127.0.0.1:8822, class org.apache.mina.transport.socket.nio.NioSocketSession, remote=/127.0.0.1:9878
+20251122-13:02:09: Initiated logon request
+20251122-13:02:09: Disconnecting: Encountered END_OF_STREAM
+20251122-13:02:39: MINA session created: local=/127.0.0.1:5442, class org.apache.mina.transport.socket.nio.NioSocketSession, remote=/127.0.0.1:9878
+20251122-13:02:39: Initiated logon request
+20251122-13:02:39: Disconnecting: Encountered END_OF_STREAM
+20251122-13:03:09: MINA session created: local=/127.0.0.1:3198, class org.apache.mina.transport.socket.nio.NioSocketSession, remote=/127.0.0.1:9878
+20251122-13:03:09: Initiated logon request
+20251122-13:03:10: Setting DefaultApplVerID (1137=9) from Logon
+20251122-13:03:10: Logon contains ResetSeqNumFlag=Y, resetting sequence numbers to 1
+20251122-13:03:10: Received logon
+20251122-13:03:45: Disconnecting: Socket exception (/127.0.0.1:9878): java.net.SocketException: Connection reset
+20251122-13:03:46: java.net.ConnectException during connection to /127.0.0.1:9878: java.net.ConnectException: Connection refused: getsockopt (Next retry in 30000 milliseconds)
+20251122-13:04:16: MINA session created: local=/127.0.0.1:3927, class org.apache.mina.transport.socket.nio.NioSocketSession, remote=/127.0.0.1:9878
+20251122-13:04:16: Initiated logon request
+20251122-13:04:17: Setting DefaultApplVerID (1137=9) from Logon
+20251122-13:04:17: Logon contains ResetSeqNumFlag=Y, resetting sequence numbers to 1
+20251122-13:04:17: Received logon
+20251122-13:11:54: Session FIXT.1.1:BeerClient01->BeerFIXServer schedule is daily, 00:00:00-UTC - 23:59:59-UTC
+20251122-13:11:54: Created session: FIXT.1.1:BeerClient01->BeerFIXServer
+20251122-13:11:54: Configured socket addresses for session: [/127.0.0.1:9878]
+20251122-13:11:54: MINA session created: local=/127.0.0.1:6722, class org.apache.mina.transport.socket.nio.NioSocketSession, remote=/127.0.0.1:9878
+20251122-13:11:55: Initiated logon request
+20251122-13:11:55: Setting DefaultApplVerID (1137=9) from Logon
+20251122-13:11:55: Logon contains ResetSeqNumFlag=Y, resetting sequence numbers to 1
+20251122-13:11:55: Received logon
+20251122-13:21:09: Disconnecting: Socket exception (/127.0.0.1:9878): java.net.SocketException: Connection reset
+20251129-07:21:29: Session FIXT.1.1:BeerClient01->BeerFIXServer schedule is daily, 00:00:00-UTC - 23:59:59-UTC
+20251129-07:21:29: Session state is not current; resetting FIXT.1.1:BeerClient01->BeerFIXServer
+20251129-07:21:29: Created session: FIXT.1.1:BeerClient01->BeerFIXServer
+20251129-07:21:29: Configured socket addresses for session: [/127.0.0.1:9878]
+20251129-07:21:29: MINA session created: local=/127.0.0.1:3908, class org.apache.mina.transport.socket.nio.NioSocketSession, remote=/127.0.0.1:9878
+20251129-07:21:30: Initiated logon request
+20251129-07:21:30: Setting DefaultApplVerID (1137=9) from Logon
+20251129-07:21:30: Received logon

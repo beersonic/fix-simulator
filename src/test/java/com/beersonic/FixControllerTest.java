@@ -47,11 +47,18 @@ public class FixControllerTest {
       String sessionId = result.getResponse().getContentAsString();
       assertThat(sessionId).isNotBlank();
 
-      // List sessions
+      // List sessions and verify returned fields
       mockMvc
           .perform(get("/fix/sessions"))
           .andExpect(status().isOk())
-          .andExpect(jsonPath("$[0].id").value(sessionId));
+          .andExpect(jsonPath("$[0].id").value(sessionId))
+          .andExpect(jsonPath("$[0].senderCompID").value("TestClient"))
+          .andExpect(jsonPath("$[0].targetCompID").value("TestServer"))
+          .andExpect(jsonPath("$[0].host").value("127.0.0.1"))
+          .andExpect(jsonPath("$[0].port").value("9999"))
+          .andExpect(jsonPath("$[0].heartBtInt").value("30"))
+          .andExpect(jsonPath("$[0].defaultApplVerID").value("FIX.5.0SP2"))
+          .andExpect(jsonPath("$[0].type").value("initiator"));
 
       // Get messages (should be empty or contain logon attempt)
       mockMvc.perform(get("/fix/sessions/" + sessionId + "/messages")).andExpect(status().isOk());

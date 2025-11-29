@@ -33,39 +33,6 @@ public class QuickFixService {
 
   private final ConcurrentHashMap<String, SessionHolder> sessions = new ConcurrentHashMap<>();
   private final AtomicInteger idCounter = new AtomicInteger(1);
-  private final FixSessionFactory sessionFactory;
-
-  public QuickFixService(FixSessionFactory sessionFactory) {
-    this.sessionFactory = sessionFactory;
-  }
-
-  // For Spring Boot default construction
-  public QuickFixService() {
-    this(
-        new FixSessionFactory() {
-          @Override
-          public SocketInitiator createInitiator(
-              Application app,
-              MessageStoreFactory storeFactory,
-              SessionSettings settings,
-              LogFactory logFactory,
-              MessageFactory messageFactory)
-              throws Exception {
-            return new SocketInitiator(app, storeFactory, settings, logFactory, messageFactory);
-          }
-
-          @Override
-          public SocketAcceptor createAcceptor(
-              Application app,
-              MessageStoreFactory storeFactory,
-              SessionSettings settings,
-              LogFactory logFactory,
-              MessageFactory messageFactory)
-              throws Exception {
-            return new SocketAcceptor(app, storeFactory, settings, logFactory, messageFactory);
-          }
-        });
-  }
 
   /**
    * Create and start a session based on the provided config map. Returns a generated sessionId
@@ -80,19 +47,9 @@ public class QuickFixService {
     String heartBtInt = Optional.ofNullable(config.get("heartBtInt")).orElse("30");
     String beginString = Optional.ofNullable(config.get("beginString")).orElse("FIXT.1.1");
     String applVer = Optional.ofNullable(config.get("defaultApplVerID")).orElse("FIX.5.0SP2");
-    String resetOnLogon = config.get("resetOnLogon");
 
     if (sender == null || target == null) {
       throw new IllegalArgumentException("senderCompID and targetCompID are required");
-    }
-
-    // Compose session name (QuickFIX SessionID string)
-    String sessionName = String.format("%s:%s->%s", beginString, sender, target);
-    // Prevent duplicate session name
-    for (SessionHolder sh : sessions.values()) {
-      if (sh.sessionName != null && sh.sessionName.equals(sessionName)) {
-        throw new IllegalArgumentException("Duplicate session name: " + sessionName);
-      }
     }
 
     String sid = "s" + idCounter.getAndIncrement();
@@ -107,9 +64,6 @@ public class QuickFixService {
     cfg.append("FileLogPath=log/").append(sid).append("\n");
     cfg.append("HeartBtInt=").append(heartBtInt).append("\n");
     cfg.append("DefaultApplVerID=").append(applVer).append("\n");
-    if (resetOnLogon != null) {
-      cfg.append("ResetOnLogon=").append(resetOnLogon).append("\n");
-    }
     // Default session time window (allow full-day sessions by default)
     cfg.append("StartTime=00:00:00").append("\n");
     cfg.append("EndTime=23:59:59").append("\n");
@@ -133,22 +87,18 @@ public class QuickFixService {
 
     if ("initiator".equalsIgnoreCase(type)) {
       SocketInitiator initiator =
-          sessionFactory.createInitiator(
-              application, storeFactory, settings, logFactory, messageFactory);
+          new SocketInitiator(application, storeFactory, settings, logFactory, messageFactory);
       initiator.start();
       sessions.put(
-          sid, new SessionHolder(sid, initiator, null, application, Instant.now(), sessionName));
-      log.info(
-          "Started initiator session {} -> {} (id={}; name={})", sender, target, sid, sessionName);
+          sid, new SessionHolder(sid, initiator, null, application, Instant.now(), settings));
+      log.info("Started initiator session {} -> {} (id={})", sender, target, sid);
     } else {
       SocketAcceptor acceptor =
-          sessionFactory.createAcceptor(
-              application, storeFactory, settings, logFactory, messageFactory);
+          new SocketAcceptor(application, storeFactory, settings, logFactory, messageFactory);
       acceptor.start();
       sessions.put(
-          sid, new SessionHolder(sid, null, acceptor, application, Instant.now(), sessionName));
-      log.info(
-          "Started acceptor session {} -> {} (id={}; name={})", sender, target, sid, sessionName);
+          sid, new SessionHolder(sid, null, acceptor, application, Instant.now(), settings));
+      log.info("Started acceptor session {} -> {} (id={})", sender, target, sid);
     }
 
     return sid;
@@ -157,26 +107,7 @@ public class QuickFixService {
   public List<Map<String, Object>> listSessions() {
     List<Map<String, Object>> out = new ArrayList<>();
     for (SessionHolder sh : sessions.values()) {
-      Map<String, Object> m = new java.util.HashMap<>(sh.toMap());
-      boolean loggedOn = false;
-      try {
-        // Try to get QuickFIX/J session status
-        if (sh.initiator != null && sh.initiator.getSessions().size() > 0) {
-          quickfix.SessionID sid = sh.initiator.getSessions().get(0);
-          loggedOn =
-              quickfix.Session.lookupSession(sid) != null
-                  && quickfix.Session.lookupSession(sid).isLoggedOn();
-        } else if (sh.acceptor != null && sh.acceptor.getSessions().size() > 0) {
-          quickfix.SessionID sid = sh.acceptor.getSessions().get(0);
-          loggedOn =
-              quickfix.Session.lookupSession(sid) != null
-                  && quickfix.Session.lookupSession(sid).isLoggedOn();
-        }
-      } catch (Exception e) {
-        loggedOn = false;
-      }
-      m.put("loggedOn", loggedOn);
-      out.add(m);
+      out.add(sh.toMap());
     }
     return out;
   }
@@ -200,9 +131,9 @@ public class QuickFixService {
     final String id;
     final SocketInitiator initiator;
     final SocketAcceptor acceptor;
+    final SessionSettings settings;
     final InternalApplication application;
     final Instant startedAt;
-    final String sessionName;
 
     SessionHolder(
         String id,
@@ -210,13 +141,13 @@ public class QuickFixService {
         SocketAcceptor acceptor,
         InternalApplication application,
         Instant startedAt,
-        String sessionName) {
+        SessionSettings settings) {
       this.id = id;
       this.initiator = initiator;
       this.acceptor = acceptor;
       this.application = application;
       this.startedAt = startedAt;
-      this.sessionName = sessionName;
+      this.settings = settings;
     }
 
     void stop() {
@@ -234,18 +165,47 @@ public class QuickFixService {
       return application.getMessages();
     }
 
+    private String getSessionField(String key) {
+      // Try to get from session settings if available
+      try {
+        if (settings != null) {
+          if (initiator != null && initiator.getSessions().size() > 0) {
+            SessionID sid = initiator.getSessions().get(0);
+            return settings.getString(sid, key);
+          }
+          if (acceptor != null && acceptor.getSessions().size() > 0) {
+            SessionID sid = acceptor.getSessions().get(0);
+            return settings.getString(sid, key);
+          }
+        }
+      } catch (Exception e) {
+        // ignore
+      }
+      return null;
+    }
+
     Map<String, Object> toMap() {
-      return Map.of(
-          "id",
-          id,
-          "startedAt",
-          startedAt.toString(),
-          "messageCount",
-          application.messageCount(),
-          "active",
-          true,
-          "sessionName",
-          sessionName);
+      Map<String, Object> map = new java.util.HashMap<>();
+      map.put("id", id);
+      map.put("type", getSessionField("ConnectionType"));
+      map.put("senderCompID", getSessionField("SenderCompID"));
+      map.put("targetCompID", getSessionField("TargetCompID"));
+      map.put(
+          "host",
+          getSessionField("SocketConnectHost") != null
+              ? getSessionField("SocketConnectHost")
+              : getSessionField("SocketAcceptHost"));
+      map.put(
+          "port",
+          getSessionField("SocketConnectPort") != null
+              ? getSessionField("SocketConnectPort")
+              : getSessionField("SocketAcceptPort"));
+      map.put("heartBtInt", getSessionField("HeartBtInt"));
+      map.put("defaultApplVerID", getSessionField("DefaultApplVerID"));
+      map.put("startedAt", startedAt.toString());
+      map.put("messageCount", application.messageCount());
+      map.put("loggedOn", application.isLoggedOn());
+      return map;
     }
   }
 
@@ -299,7 +259,7 @@ public class QuickFixService {
     }
 
     @Override
-    public void fromApp(Message message, SessionID sessionKey) {
+    public void fromApp(Message message, SessionID sessionId) {
       String m = String.format("[%s] FromApp: %s", sessionKey, message);
       push(m);
       log.debug(m);
@@ -318,6 +278,15 @@ public class QuickFixService {
 
     int messageCount() {
       return messages.size();
+    }
+
+    boolean isLoggedOn() {
+      // This is a simple check: if last message contains "Logon" and not "Logout"
+      for (String m : messages) {
+        if (m.contains("Logon")) return true;
+        if (m.contains("Logout")) return false;
+      }
+      return false;
     }
   }
 }

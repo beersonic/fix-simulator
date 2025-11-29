@@ -64,3 +64,33 @@ The backend can be packaged with an Electron shell for Windows Store delivery. S
 - QuickFIX/J: https://www.quickfixj.org
 - Spring Boot: https://spring.io/projects/spring-boot
 - React: https://react.dev
+
+## Quickstart (end-to-end)
+1. Start the backend (from the project root):
+
+```powershell
+cd E:\Code\fix-simulator
+.\gradlew.bat clean test
+.\gradlew.bat bootRun
+```
+
+2. Start the React UI (new terminal):
+
+```powershell
+cd E:\Code\fix-simulator\ui
+npm install
+npm start
+```
+
+3. (Optional) Use the helper script to create a session, fetch messages and stop it:
+
+```powershell
+cd E:\Code\fix-simulator
+.\scripts\run_session_flow.ps1
+```
+
+4. Manual REST testing: use `backend_test.rest` (VS Code REST Client) or curl/newman scripts. After creating a session, copy the returned session id (e.g. `s1`) into the `@sessionId` variable in `backend_test.rest` to run the messages/stop requests.
+
+## Notes
+- The helper script `scripts/run_session_flow.ps1` demonstrates the create -> messages -> stop flow and is useful for quick smoke tests.
+- The UI polls `/fix/sessions` every 3 seconds; you can reduce polling or add WebSocket push later for real-time updates.

@@ -13,7 +13,8 @@ function App() {
     targetCompID: 'BeerFIXServer',
     host: '127.0.0.1',
     port: '9878',
-    heartBtInt: '30'
+    heartBtInt: '30',
+    defaultApplVerID: 'FIX.5.0SP2'
   });
 
   // Sessions data from backend
@@ -41,7 +42,7 @@ function App() {
       const res = await axios.get('/fix/sessions');
       setSessions(res.data);
       setShowAddForm(false);
-      setForm({ type: 'initiator', senderCompID: '', targetCompID: 'BeerFIXServer', host: '127.0.0.1', port: '9878', heartBtInt: '30' });
+      setForm({ type: 'initiator', senderCompID: '', targetCompID: 'BeerFIXServer', host: '127.0.0.1', port: '9878', heartBtInt: '30', defaultApplVerID: 'FIX.5.0SP2' });
     } catch (err) {
       setAddError(err.response?.data?.message || err.message || 'Failed to add session');
     }

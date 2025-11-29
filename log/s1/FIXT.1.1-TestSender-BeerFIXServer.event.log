@@ -1,0 +1,18 @@
+20251122-12:39:18: Session FIXT.1.1:TestSender->BeerFIXServer schedule is daily, 00:00:00-UTC - 23:59:59-UTC
+20251122-12:39:18: Created session: FIXT.1.1:TestSender->BeerFIXServer
+20251122-12:39:18: Configured socket addresses for session: [/127.0.0.1:9878]
+20251122-12:39:18: MINA session created: local=/127.0.0.1:14947, class org.apache.mina.transport.socket.nio.NioSocketSession, remote=/127.0.0.1:9878
+20251122-12:39:19: Initiated logon request
+20251122-12:39:19: Disconnecting: Encountered END_OF_STREAM
+20251122-12:39:48: MINA session created: local=/127.0.0.1:8923, class org.apache.mina.transport.socket.nio.NioSocketSession, remote=/127.0.0.1:9878
+20251122-12:39:49: Initiated logon request
+20251122-12:39:49: Disconnecting: Encountered END_OF_STREAM
+20251122-12:40:18: MINA session created: local=/127.0.0.1:12486, class org.apache.mina.transport.socket.nio.NioSocketSession, remote=/127.0.0.1:9878
+20251122-12:40:19: Initiated logon request
+20251122-12:40:19: Disconnecting: Encountered END_OF_STREAM
+20251122-12:40:49: java.net.ConnectException during connection to /127.0.0.1:9878: java.net.ConnectException: Connection refused: getsockopt (Next retry in 30000 milliseconds)
+20251122-12:41:19: java.net.ConnectException during connection to /127.0.0.1:9878: java.net.ConnectException: Connection refused: getsockopt (Next retry in 30000 milliseconds)
+20251122-12:41:49: java.net.ConnectException during connection to /127.0.0.1:9878: java.net.ConnectException: Connection refused: getsockopt (Next retry in 30000 milliseconds)
+20251122-12:42:20: java.net.ConnectException during connection to /127.0.0.1:9878: java.net.ConnectException: Connection refused: getsockopt (Next retry in 30000 milliseconds)
+20251122-12:42:50: java.net.ConnectException during connection to /127.0.0.1:9878: java.net.ConnectException: Connection refused: getsockopt (Next retry in 30000 milliseconds)
+20251122-12:43:20: java.net.ConnectException during connection to /127.0.0.1:9878: java.net.ConnectException: Connection refused: getsockopt (Next retry in 30000 milliseconds)

@@ -44,6 +44,10 @@ export default function AddSessionForm({ form, setForm, onSubmit, onCancel }) {
         <label>HeartBtInt: </label>
         <input value={form.heartBtInt} onChange={e => setForm(f => ({ ...f, heartBtInt: e.target.value }))} required />
       </div>
+      <div style={{ marginBottom: '0.5rem' }}>
+        <label>DefaultApplVerID: </label>
+        <input value={form.defaultApplVerID ?? 'FIX.5.0SP2'} onChange={e => setForm(f => ({ ...f, defaultApplVerID: e.target.value }))} required />
+      </div>
       <div style={{ display: 'flex', gap: '0.5rem' }}>
         <button type="submit" style={{ background: '#1976d2', color: 'white', border: 'none', borderRadius: '4px', padding: '0.3rem 1rem', fontWeight: 'bold' }}>Add</button>
         <button type="button" style={{ background: '#eee', border: 'none', borderRadius: '4px', padding: '0.3rem 1rem' }} onClick={onCancel}>Cancel</button>

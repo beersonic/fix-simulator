@@ -8,8 +8,16 @@
 # Note: when acting as an initiator, SenderCompID must be the client id and TargetCompID the server id
 @serverHost = 127.0.0.1
 @serverPort = 9878
-@serverSender = BeerClient04
+@serverSender = BeerClient05
 @serverTarget = BeerFIXServer
+
+# After creating a session, copy the returned session id here for the follow-up requests (e.g. s1)
+# Uncomment and set when re-running messages/stop requests:
+# @sessionId = s1
+#
+# Quick helper: use the PowerShell helper to create a session and run messages/stop automatically:
+#   PowerShell:  .\scripts\run_session_flow.ps1
+# This will create an initiator session using defaults above, print the session id, fetch messages, then stop the session.
 
 ### Create initiator session for your local FIX server (update variables at top to match server config)
 POST {{baseUrl}}/fix/session
