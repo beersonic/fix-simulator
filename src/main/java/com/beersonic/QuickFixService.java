@@ -31,8 +31,16 @@ import quickfix.SocketInitiator;
 @Service
 public class QuickFixService {
 
-  private final ConcurrentHashMap<String, SessionHolder> sessions = new ConcurrentHashMap<>();
+  // Map keyed by canonical FIX session identity (BeginString|Sender|Target|Host:Port)
+  private final ConcurrentHashMap<String, SessionHolder> canonicalSessions = new ConcurrentHashMap<>();
+  // Alias mappings: short id (sN) -> canonicalKey and canonicalKey -> alias
+  private final ConcurrentHashMap<String, String> aliasToCanonical = new ConcurrentHashMap<>();
+  private final ConcurrentHashMap<String, String> canonicalToAlias = new ConcurrentHashMap<>();
   private final AtomicInteger idCounter = new AtomicInteger(1);
+
+  private String makeCanonicalKey(String beginString, String sender, String target, String host, String port) {
+    return String.format("%s:%s->%s@%s:%s", beginString, sender, target, host, port);
+  }
 
   /**
    * Create and start a session based on the provided config map. Returns a generated sessionId
@@ -52,8 +60,24 @@ public class QuickFixService {
       throw new IllegalArgumentException("senderCompID and targetCompID are required");
     }
 
-    String sid = "s" + idCounter.getAndIncrement();
+    String canonicalKey = makeCanonicalKey(beginString, sender, target, host, port);
 
+    // If an alias exists for this canonical FIX identity, check if the session holder
+    // is active. If active, return the alias. If an alias exists but no active holder,
+    // reuse the same alias id and start a new session that reuses the existing store/log.
+    String sid;
+    if (canonicalToAlias.containsKey(canonicalKey)) {
+      String existingAlias = canonicalToAlias.get(canonicalKey);
+      SessionHolder existingHolder = canonicalSessions.get(canonicalKey);
+      if (existingHolder != null) {
+        log.info("Session for {} already active as alias {}", canonicalKey, existingAlias);
+        return existingAlias;
+      }
+      sid = existingAlias; // reuse alias but start a fresh holder bound to same store
+      log.info("Recreating session for {} with existing alias {}", canonicalKey, sid);
+    } else {
+      sid = "s" + idCounter.getAndIncrement();
+    }
     StringBuilder cfg = new StringBuilder();
     cfg.append("[session]\n");
     cfg.append("BeginString=").append(beginString).append("\n");
@@ -89,40 +113,58 @@ public class QuickFixService {
       SocketInitiator initiator =
           new SocketInitiator(application, storeFactory, settings, logFactory, messageFactory);
       initiator.start();
-      sessions.put(
-          sid, new SessionHolder(sid, initiator, null, application, Instant.now(), settings));
-      log.info("Started initiator session {} -> {} (id={})", sender, target, sid);
+      SessionHolder sh = new SessionHolder(sid, initiator, null, application, Instant.now(), settings);
+      canonicalSessions.put(canonicalKey, sh);
+      aliasToCanonical.put(sid, canonicalKey);
+      canonicalToAlias.put(canonicalKey, sid);
+      log.info("Started initiator session {} -> {} (alias={}, canonical={})", sender, target, sid, canonicalKey);
+      return sid;
     } else {
       SocketAcceptor acceptor =
           new SocketAcceptor(application, storeFactory, settings, logFactory, messageFactory);
       acceptor.start();
-      sessions.put(
-          sid, new SessionHolder(sid, null, acceptor, application, Instant.now(), settings));
-      log.info("Started acceptor session {} -> {} (id={})", sender, target, sid);
+      SessionHolder sh = new SessionHolder(sid, null, acceptor, application, Instant.now(), settings);
+      canonicalSessions.put(canonicalKey, sh);
+      aliasToCanonical.put(sid, canonicalKey);
+      canonicalToAlias.put(canonicalKey, sid);
+      log.info("Started acceptor session {} -> {} (alias={}, canonical={})", sender, target, sid, canonicalKey);
+      return sid;
     }
-
-    return sid;
   }
 
   public List<Map<String, Object>> listSessions() {
     List<Map<String, Object>> out = new ArrayList<>();
-    for (SessionHolder sh : sessions.values()) {
-      out.add(sh.toMap());
+    for (Map.Entry<String, SessionHolder> e : canonicalSessions.entrySet()) {
+      String canonical = e.getKey();
+      SessionHolder sh = e.getValue();
+      Map<String, Object> m = sh.toMap();
+      // include alias id and canonical key so UI can show both
+      String alias = canonicalToAlias.get(canonical);
+      m.put("id", alias != null ? alias : sh.id);
+      m.put("fixSessionKey", canonical);
+      out.add(m);
     }
     return out;
   }
 
   public List<String> getMessages(String sessionId) {
-    SessionHolder sh = sessions.get(sessionId);
+    String canonical = aliasToCanonical.get(sessionId);
+    if (canonical == null) return Collections.emptyList();
+    SessionHolder sh = canonicalSessions.get(canonical);
     if (sh == null) return Collections.emptyList();
     return sh.getRecentMessages();
   }
 
   public boolean stopSession(String sessionId) {
-    SessionHolder sh = sessions.remove(sessionId);
-    if (sh == null) return false;
-    sh.stop();
-    log.info("Stopped session id={}", sessionId);
+    String canonical = aliasToCanonical.get(sessionId);
+    if (canonical == null) return false;
+    // Stop and remove the active session holder, but keep alias mappings so
+    // the short alias remains stable and can be used to recreate the session.
+    SessionHolder sh = canonicalSessions.remove(canonical);
+    if (sh != null) {
+      sh.stop();
+    }
+    log.info("Stopped session alias={} canonical={}", sessionId, canonical);
     return true;
   }
 
@@ -165,7 +207,7 @@ public class QuickFixService {
       return application.getMessages();
     }
 
-    private String getSessionField(String key) {
+    String getSessionField(String key) {
       // Try to get from session settings if available
       try {
         if (settings != null) {

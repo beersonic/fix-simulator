@@ -1,8 +1,0 @@
-20251122-13:17:02: Session FIXT.1.1:BeerClient03->BeerFIXServer schedule is daily, 00:00:00-UTC - 23:59:59-UTC
-20251122-13:17:02: Created session: FIXT.1.1:BeerClient03->BeerFIXServer
-20251122-13:17:02: Configured socket addresses for session: [/127.0.0.1:9878]
-20251122-13:17:02: MINA session created: local=/127.0.0.1:5758, class org.apache.mina.transport.socket.nio.NioSocketSession, remote=/127.0.0.1:9878
-20251122-13:17:03: Initiated logon request
-20251122-13:17:04: Setting DefaultApplVerID (1137=9) from Logon
-20251122-13:17:04: Received logon
-20251122-13:21:09: Disconnecting: Socket exception (/127.0.0.1:9878): java.net.SocketException: Connection reset
