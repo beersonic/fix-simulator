@@ -31,10 +31,18 @@ npm start
 - `GET /fix/sessions/{id}/messages` — Get messages for a session
 - `POST /fix/sessions/{id}/stop` — Stop a session
 
+Notes on session identity
+- The backend uses a canonical FIX-session identity as the primary key: `BeginString:Sender->Target@host:port` (e.g. `FIXT.1.1:BeerClient01->BeerFIXServer@127.0.0.1:9878`).
+- Short aliases such as `s1`, `s2` are provided by the server as stable references (returned from `POST /fix/session` and shown in the UI). If you create a session with the same FIX identity + destination, the server will return the existing alias instead of creating a duplicate. This prevents sequence-store mismatches when a client is moved between aliases.
+- `GET /fix/sessions` now includes a `fixSessionKey` field with the canonical key for each session.
+
 ## React UI
 - Sidebar shows all sessions and status (online/offline)
 - Main panel displays session details
 - Sessions update automatically (polling)
+
+UI root path
+- The backend forwards `/` to the React `index.html` so visiting `http://localhost:8080/` loads the UI directly (no need to type `/index.html`). The UI URL is logged on startup.
 
 ## Testing
 Run all backend tests:
@@ -94,3 +102,6 @@ cd E:\Code\fix-simulator
 ## Notes
 - The helper script `scripts/run_session_flow.ps1` demonstrates the create -> messages -> stop flow and is useful for quick smoke tests.
 - The UI polls `/fix/sessions` every 3 seconds; you can reduce polling or add WebSocket push later for real-time updates.
+
+Git & build artifacts
+- Runtime store/log files are runtime artifacts and are ignored in the repository (`store/`, `log/`). Built UI artifacts are also ignored (`src/main/resources/static/` and local `bin/main/static/`). Build the UI separately (in `ui/`) and copy the contents into the Spring Boot static folder for local runs, or perform the UI build in CI and include it during packaging.
