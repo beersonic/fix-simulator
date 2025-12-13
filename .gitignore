@@ -13,3 +13,10 @@ Thumbs.db
 
 # Gradle wrapper
 /gradle/wrapper/gradle-wrapper.jar
+
+# QuickFIX runtime logs and stores
+log/
+store/
+
+# Built UI static files (optional - built artifacts)
+src/main/resources/static/
