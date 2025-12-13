@@ -214,3 +214,11 @@
 20251129-07:21:30: Initiated logon request
 20251129-07:21:30: Setting DefaultApplVerID (1137=9) from Logon
 20251129-07:21:30: Received logon
+20251213-02:42:06: Session FIXT.1.1:BeerClient01->BeerFIXServer schedule is daily, 00:00:00-UTC - 23:59:59-UTC
+20251213-02:42:06: Session state is not current; resetting FIXT.1.1:BeerClient01->BeerFIXServer
+20251213-02:42:06: Created session: FIXT.1.1:BeerClient01->BeerFIXServer
+20251213-02:42:06: Configured socket addresses for session: [/127.0.0.1:9878]
+20251213-02:42:06: MINA session created: local=/127.0.0.1:13885, class org.apache.mina.transport.socket.nio.NioSocketSession, remote=/127.0.0.1:9878
+20251213-02:42:07: Initiated logon request
+20251213-02:42:07: Setting DefaultApplVerID (1137=9) from Logon
+20251213-02:42:07: Received logon
