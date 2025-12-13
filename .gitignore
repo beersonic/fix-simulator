@@ -20,3 +20,4 @@ store/
 
 # Built UI static files (optional - built artifacts)
 src/main/resources/static/
+bin/main/static/
