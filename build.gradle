@@ -57,4 +57,27 @@ spotless {
     }
 }
 
+// Configure the Versions plugin (check for dependency updates)
+def isNonStable = { String version ->
+    if (version == null) return true
+    def stableKeywords = ['RELEASE', 'FINAL', 'GA']
+    if (stableKeywords.any { version.toUpperCase().contains(it) }) return false
+    // simple semver-ish check: digits and dots (allow -r suffix)
+    def regex = /^[0-9]+([.][0-9A-Za-z_-]+)*([.-]r)?$/
+    return !(version ==~ regex)
+}
+
+dependencyUpdates {
+    checkForGradleUpdate = true
+    outputFormatter = 'json,html'
+    outputDir = 'build/dependencyUpdates'
+    reportfileName = 'report'
+    // Reject non-stable candidate versions when current version is stable
+    rejectVersionIf {
+        def candidateVersion = candidate.version
+        def currentVersion = currentVersion
+        return isNonStable(candidateVersion) && !isNonStable(currentVersion)
+    }
+}
+
 
