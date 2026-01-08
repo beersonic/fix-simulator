@@ -1,9 +1,17 @@
 /build/
+# Gradle build output
+# Gradle build output
+/build/
 /.gradle/
-.gradle/
-.gradle*
+*.gradle
+
+# IDE files
+# IDE files
 /.idea/
+.vscode/
 *.iml
+
+# Compiled classes and output
 *.class
 out/
 # Windows
@@ -15,9 +23,50 @@ Thumbs.db
 /gradle/wrapper/gradle-wrapper.jar
 
 # QuickFIX runtime logs and stores
-log/
-store/
+# Runtime logs, stores and generated runtime artifacts
+/log/
+/logs/
+/store/
 
 # Built UI static files (optional - built artifacts)
-src/main/resources/static/
-bin/main/static/
+# Built UI static files (optional - built artifacts)
+/src/main/resources/static/
+/bin/main/static/
+
+# Packaging / distribution artifacts
+# Packaging / distribution artifacts
+/dist/
+/electron/dist/
+/release/
+/runtime/
+/build/**/libs/
+/dist/**
+
+# Temporary files
+# Temporary and log files
+/tmp/
+*.log
+*.pid
+*.seed
+*.tmp
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Node modules
+/node_modules/
+
+# Editor swap / history
+*~
+*.swp
+.history/
+
+# JPackage and runtime images
+/app/
+/runtime/
+/electron/node_modules
+/electron/runtime
+/electron/backend
+/log
+/store

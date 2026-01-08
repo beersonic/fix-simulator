@@ -9,6 +9,17 @@ Goals
 Dev instructions
 1. Install Node.js (16+ recommended) and npm.
 2. From this folder run `npm install` to install Electron.
+   
+Important (Windows)
+- When building or packaging the Electron app on Windows you must run your terminal as Administrator. From the `electron` folder run the install and build steps below in an elevated PowerShell prompt.
+
+```powershell
+# In an Administrator PowerShell opened at the electron folder
+npm install
+npm run build
+# (Optional) to produce installers/packages:
+npm run package
+```
 3. Start the backend in dev mode in the project root:
    - PowerShell: `..\gradlew.bat bootRun`
 4. Start Electron from this folder:

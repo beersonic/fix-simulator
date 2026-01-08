@@ -4,11 +4,13 @@
 			"path": "."
 		},
 		{
-			"path": "../fix-server-mockup/app/src/main/resources"
+			"path": "../fix-server-mockup"
 		}
 	],
 	"settings": {
 		"java.configuration.updateBuildConfiguration": "automatic",
-		"java.compile.nullAnalysis.mode": "automatic"
+		"java.debug.settings.onBuildFailureProceed": true,
+		"java.compile.nullAnalysis.mode": "automatic",
+		"powershell.cwd": "fix-simulator"
 	}
 }

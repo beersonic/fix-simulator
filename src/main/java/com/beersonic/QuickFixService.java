@@ -32,13 +32,15 @@ import quickfix.SocketInitiator;
 public class QuickFixService {
 
   // Map keyed by canonical FIX session identity (BeginString|Sender|Target|Host:Port)
-  private final ConcurrentHashMap<String, SessionHolder> canonicalSessions = new ConcurrentHashMap<>();
+  private final ConcurrentHashMap<String, SessionHolder> canonicalSessions =
+      new ConcurrentHashMap<>();
   // Alias mappings: short id (sN) -> canonicalKey and canonicalKey -> alias
   private final ConcurrentHashMap<String, String> aliasToCanonical = new ConcurrentHashMap<>();
   private final ConcurrentHashMap<String, String> canonicalToAlias = new ConcurrentHashMap<>();
   private final AtomicInteger idCounter = new AtomicInteger(1);
 
-  private String makeCanonicalKey(String beginString, String sender, String target, String host, String port) {
+  private String makeCanonicalKey(
+      String beginString, String sender, String target, String host, String port) {
     return String.format("%s:%s->%s@%s:%s", beginString, sender, target, host, port);
   }
 
@@ -113,21 +115,33 @@ public class QuickFixService {
       SocketInitiator initiator =
           new SocketInitiator(application, storeFactory, settings, logFactory, messageFactory);
       initiator.start();
-      SessionHolder sh = new SessionHolder(sid, initiator, null, application, Instant.now(), settings);
+      SessionHolder sh =
+          new SessionHolder(sid, initiator, null, application, Instant.now(), settings);
       canonicalSessions.put(canonicalKey, sh);
       aliasToCanonical.put(sid, canonicalKey);
       canonicalToAlias.put(canonicalKey, sid);
-      log.info("Started initiator session {} -> {} (alias={}, canonical={})", sender, target, sid, canonicalKey);
+      log.info(
+          "Started initiator session {} -> {} (alias={}, canonical={})",
+          sender,
+          target,
+          sid,
+          canonicalKey);
       return sid;
     } else {
       SocketAcceptor acceptor =
           new SocketAcceptor(application, storeFactory, settings, logFactory, messageFactory);
       acceptor.start();
-      SessionHolder sh = new SessionHolder(sid, null, acceptor, application, Instant.now(), settings);
+      SessionHolder sh =
+          new SessionHolder(sid, null, acceptor, application, Instant.now(), settings);
       canonicalSessions.put(canonicalKey, sh);
       aliasToCanonical.put(sid, canonicalKey);
       canonicalToAlias.put(canonicalKey, sid);
-      log.info("Started acceptor session {} -> {} (alias={}, canonical={})", sender, target, sid, canonicalKey);
+      log.info(
+          "Started acceptor session {} -> {} (alias={}, canonical={})",
+          sender,
+          target,
+          sid,
+          canonicalKey);
       return sid;
     }
   }

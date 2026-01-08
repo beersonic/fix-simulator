@@ -57,7 +57,17 @@ curl -X POST http://localhost:8080/fix/session \
 Success response (200)
 ```
 {
-  "id": "s1" // short alias returned by the server (use this id for subsequent calls)
+  "id": "s1",
+  "type":"initiator",
+  "senderCompID":"MY_SENDER",
+  "targetCompID":"THEIR_TARGET",
+  "host":"127.0.0.1",
+  "port":9876,
+  "heartBtInt":30,
+  "defaultApplVerID":"FIX.5.0SP2",
+  "startedAt":"2025-11-29T07:47:31Z",
+  "loggedOn": false,
+  "messageCount": 0
 }
 ```
 
@@ -82,7 +92,6 @@ Success response (200)
 [
   {
     "id":"s1",
-    "fixSessionKey":"FIXT.1.1:MY_SENDER->THEIR_TARGET@127.0.0.1:9876",
     "type":"initiator",
     "senderCompID":"MY_SENDER",
     "targetCompID":"THEIR_TARGET",
