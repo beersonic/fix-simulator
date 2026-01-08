@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Renderer EXE Test</title>
+  <style>body{font-family:Segoe UI,Arial;padding:20px}button{padding:8px 12px}</style>
+</head>
+<body>
+  <h2>Run EXE Test</h2>
+  <p>
+    <label>Executable path: <input id="exePath" size="60" value="C:\\Windows\\System32\\cmd.exe"></label>
+  </p>
+  <p>
+    <label>Args (JSON array): <input id="exeArgs" size="60" value='["/c","echo","hello from cmd"]'></label>
+  </p>
+  <p>
+    <button id="runBtn">Run EXE</button>
+  </p>
+  <pre id="output" style="white-space:pre-wrap;background:#f6f6f6;padding:10px;border:1px solid #ddd"></pre>
+  <script src="renderer_test.js"></script>
+</body>
+</html>

@@ -1,5 +1,0 @@
-20251213-03:26:32: Session FIXT.1.1:BeerClient05->BeerFIXServer schedule is daily, 00:00:00-UTC - 23:59:59-UTC
-20251213-03:26:32: Created session: FIXT.1.1:BeerClient05->BeerFIXServer
-20251213-03:26:32: Configured socket addresses for session: [/127.0.0.1:9878]
-20251213-03:26:32: MINA session created: local=/127.0.0.1:8232, class org.apache.mina.transport.socket.nio.NioSocketSession, remote=/127.0.0.1:9878
-20251213-03:26:32: Disconnecting: Encountered END_OF_STREAM
