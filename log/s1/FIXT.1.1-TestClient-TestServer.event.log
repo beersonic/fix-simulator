@@ -1,8 +1,0 @@
-20251213-03:16:03: Session FIXT.1.1:TestClient->TestServer schedule is daily, 00:00:00-UTC - 23:59:59-UTC
-20251213-03:16:03: Created session: FIXT.1.1:TestClient->TestServer
-20251213-03:16:04: Configured socket addresses for session: [/127.0.0.1:9999]
-20251213-03:16:04: java.net.ConnectException during connection to /127.0.0.1:9999: java.net.ConnectException: Connection refused: getsockopt (Next retry in 30000 milliseconds)
-20251213-03:17:24: Session FIXT.1.1:TestClient->TestServer schedule is daily, 00:00:00-UTC - 23:59:59-UTC
-20251213-03:17:24: Created session: FIXT.1.1:TestClient->TestServer
-20251213-03:17:25: Configured socket addresses for session: [/127.0.0.1:9999]
-20251213-03:17:25: java.net.ConnectException during connection to /127.0.0.1:9999: java.net.ConnectException: Connection refused: getsockopt (Next retry in 30000 milliseconds)
